@@ -1,0 +1,21 @@
+plugins {
+    id 'java-library'
+}
+
+group = "net.corda.osgi"
+
+dependencies {
+    compileOnly "org.osgi:osgi.annotation:$osgiVersion"
+    compileOnly "org.osgi:osgi.core:$osgiVersion"
+    compileOnly "org.osgi:org.osgi.service.component.annotations:$osgiServiceComponentVersion"
+
+    compileOnly project(":osgi-simple-bootstrapper-api")
+}
+
+tasks.register("tar", Tar) {
+    archiveFileName = "${project.name}.tar"
+    from(project.tasks.named(JavaPlugin.JAR_TASK_NAME)
+            .flatMap { it.archiveFile }
+            .map { it.getAsFile() }
+            .map(project.&zipTree))
+}

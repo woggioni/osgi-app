@@ -1,0 +1,25 @@
+plugins {
+    id 'java-library'
+    id 'biz.aQute.bnd.builder'
+}
+
+group = "net.corda.osgi"
+
+dependencies {
+    compileOnly "org.osgi:osgi.annotation:$osgiVersion"
+    compileOnly "org.osgi:osgi.core:$osgiVersion"
+    compileOnly "org.osgi:osgi.cmpn:$osgiVersion"
+    compileOnly "org.osgi:org.osgi.service.component.annotations:$osgiServiceComponentVersion"
+
+    compileOnly project(":osgi-simple-bootstrapper-api")
+
+    runtimeOnly "org.apache.felix:org.apache.felix.scr:$felixScrVersion"
+    runtimeOnly "org.osgi:org.osgi.util.function:$osgiUtilFunctionVersion"
+    runtimeOnly "org.osgi:org.osgi.util.promise:$osgiUtilPromiseVersion"
+}
+
+jar {
+    bnd '''\
+        Import-Package: !lombok, *
+    '''
+}

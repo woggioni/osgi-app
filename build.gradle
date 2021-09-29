@@ -1,0 +1,75 @@
+plugins {
+    id "java-gradle-plugin"
+    id "net.woggioni.gradle.lombok" apply false
+}
+
+allprojects {
+
+    apply plugin: 'java-library'
+    apply plugin: "maven-publish"
+
+    version = "0.1"
+
+    java {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        ['compileOnly', 'annotationProcessor', 'testCompileOnly', 'testAnnotationProcessor'].each { conf ->
+            add(conf, [group: "org.projectlombok", name: "lombok", version: lombokVersion])
+        }
+        testImplementation "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+        testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+    }
+}
+
+subprojects {
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                from(components["java"])
+            }
+        }
+    }
+}
+
+evaluationDependsOnChildren()
+
+group = "net.corda.plugins"
+
+dependencies {
+    implementation "biz.aQute.bnd:biz.aQute.bnd.gradle:$bndVersion"
+    implementation "biz.aQute.bnd:biz.aQute.bndlib:$bndVersion"
+
+    ['annotationProcessor', 'testCompileOnly', 'testAnnotationProcessor'].each { conf ->
+        add(conf, [group: "org.projectlombok", name: "lombok", version: lombokVersion])
+    }
+}
+
+jar {
+    into("META-INF") {
+        from(project(":osgi-simple-bootstrapper").tasks.named("tar"))
+        from(project(":osgi-simple-bootstrapper-api").tasks.named("jar"))
+        from(project(":osgi-simple-bootstrapper-application").tasks.named("jar"))
+    }
+}
+
+gradlePlugin {
+    plugins {
+        flaskPlugin {
+            id = 'net.corda.plugins.osgi-app'
+            implementationClass = 'net.corda.osgi.app.OsgiAppPlugin'
+        }
+    }
+}
+
+
+wrapper {
+    gradleVersion = '7.1.1'
+    distributionType = Wrapper.DistributionType.ALL
+}

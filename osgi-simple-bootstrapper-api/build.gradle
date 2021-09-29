@@ -1,0 +1,10 @@
+plugins {
+    id 'java-library'
+}
+
+group = "net.corda.osgi"
+
+dependencies {
+    compileOnly "org.osgi:osgi.core:$osgiVersion"
+    compileOnly "org.osgi:osgi.annotation:$osgiVersion"
+}

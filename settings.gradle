@@ -1,0 +1,19 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven {
+            url = 'https://woggioni.net/mvn/'
+        }
+    }
+    plugins {
+        id "net.woggioni.gradle.lombok" version "0.1"
+        id 'biz.aQute.bnd.builder' version bndVersion
+    }
+}
+
+rootProject.name = 'osgi-app'
+
+include 'osgi-simple-bootstrapper'
+include 'osgi-simple-bootstrapper-api'
+include 'osgi-simple-bootstrapper-application'
+
